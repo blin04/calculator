@@ -11,6 +11,7 @@ mnozenje = <atom> ( <operator_mnozenja> <atom> )*
 <atom> = <broj> | <izraz_u_zagradi>
 <izraz_u_zagradi> = <izraz>
 """
+# TODO: make lexer class
 DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 
@@ -44,11 +45,18 @@ def tokenize(expr):
         elif expr[i] == "*":
             tokens.append("MUL")
 
+        elif expr[i] == "/":
+            tokens.append("DIV")
+
         elif expr[i] == "+":
             tokens.append("ADD")
+
+        elif expr[i] == "-":
+            tokens.append("SUB")
         else:
             print("found invalid token during tokenization")
             return
+
         i += 1
 
     return tokens
