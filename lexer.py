@@ -16,6 +16,9 @@ class Token:
     def __str__(self):
         return self.type + " " + str(self.value)
 
+    def __repr__(self):
+        return f"Token({self.type}, {self.value})"
+
 
 class Lexer:
 
@@ -23,7 +26,7 @@ class Lexer:
         self.text = text
         self.tokens = []
 
-    def skip_blank(self):
+    def compress(self):
         compressed_text = ""
         for char in self.text:
             if char != " ":
@@ -32,7 +35,7 @@ class Lexer:
         self.text = compressed_text
 
     def tokenize(self):
-        self.skip_blank()
+        self.compress()
         size = len(self.text)
 
         i = 0
@@ -75,8 +78,8 @@ class Lexer:
                 token.value = '/'
             else:
                 print("LexerError: unrecognized symbol")
-                return
+                exit()
 
             self.tokens.append(token)
             i += 1
-        return
+        return self.tokens

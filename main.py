@@ -8,9 +8,8 @@ if __name__ == '__main__':
     expression = input()
 
     lexer = Lexer(expression)
-    lexer.tokenize()
+    tokens = lexer.tokenize()
 
-    print(len(lexer.tokens))
+    parser = Parser(tokens)
+    parser.printTokens()
 
-    for t in lexer.tokens:
-        print(t)
