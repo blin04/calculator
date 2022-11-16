@@ -1,9 +1,34 @@
+class OpNode:
+    """
+    class used for representing operation
+    nodes in AST
+    """
+    def __int__(self, op, left, right):
+        self.op = op
+        self.left = left
+        self.right = right
+
+
+class NumNode:
+    """
+    class used for representing number
+    nodes in AST
+    """
+    def __int__(self, token):
+        self.token = token
+        self.value = token.value
+
+
 class Parser:
 
     def __init__(self, tokens):
         self.tokens = tokens
         self.position = 0
         self.current_token = tokens[self.position]
+
+    def error(self):
+        print("ParserError: Invalid syntax used!")
+        exit()
 
     def nextToken(self):
         self.position += 1
@@ -12,11 +37,9 @@ class Parser:
         else:
             self.current_token = None
 
-    def accept(self, token):
-        if token != self.current_token:
-            # TODO: raise an error here
-            print("Invalid syntax used!")
-            exit()
+    def accept(self, token_type):
+        if token_type != self.current_token.type:
+            self.error()
 
         self.nextToken()
 
@@ -28,10 +51,29 @@ class Parser:
     # methods for parsing
 
     def number(self):
-        return
+        self.accept("NUMBER")
+
+    def left_par(self):
+        self.accept("LPAR")
+
+    def right_par(self):
+        self.accept("RPAR")
 
     def factor(self):
-        return
+        # factor = number | lpar expr rpar
+        token = self.current_token
+
+        if token.type == "NUMBER":
+            self.number()
+            node = NumNode(token)
+            return node
+
+        elif token.type == "LPAR":
+            node = self.expr()
+            self.right_par()
+            return node
+        else:
+            self.error()
 
     def term(self):
         return
