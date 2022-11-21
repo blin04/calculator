@@ -82,4 +82,6 @@ class Lexer:
 
             self.tokens.append(token)
             i += 1
+
+        self.tokens.append(Token("EOF", None))
         return self.tokens
