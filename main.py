@@ -1,5 +1,5 @@
 
-# TODO: 1. fix parser, 2. choose what tree to construct (parse or ast), 3. create class for tree
+# TODO: evalute tree
 
 from lexer import Lexer
 from parser import Parser
@@ -14,8 +14,4 @@ if __name__ == '__main__':
     print(parser.tokens)
     start_node = parser.expr()
 
-    print(start_node.left)
-    print(start_node.op)
-    print(start_node.right)
-
-
+    print(start_node)

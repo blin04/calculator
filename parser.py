@@ -3,16 +3,22 @@ class OpNode:
     class used for representing operation
     nodes in AST
     """
-    def __int__(self, op, left, right):
+    def __init__(self, left=None, op=None, right=None):
         self.op = op
         self.left = left
         self.right = right
 
     def __str__(self):
-        return
+        left = str(self.left)
+        op = str(self.op)
+        right = str(self.right)
+        return left + ", " + op + ", " + right
 
     def __repr__(self):
-        return
+        left = repr(self.left)
+        op = repr(self.op)
+        right = repr(self.right)
+        return "LEFT: " + left + " | OP: " + op + " | RIGHT: " + right
 
 
 class NumNode:
@@ -20,15 +26,15 @@ class NumNode:
     class used for representing number
     nodes in AST
     """
-    def __int__(self, token):
+    def __init__(self, token=None):
         self.token = token
         self.value = token.value
 
     def __str__(self):
-        return
+        return str(self.token)
 
     def __repr__(self):
-        return
+        return repr(self.token)
 
 
 class Parser:
@@ -57,7 +63,7 @@ class Parser:
         self.nextToken()
 
     def printTokens(self):
-        while self.current_token is not None:
+        while self.current_token != "EOF":
             print(self.current_token)
             self.nextToken()
 
@@ -66,26 +72,18 @@ class Parser:
     def number(self):
         self.accept("NUMBER")
 
-    def left_par(self):
-        self.accept("LPAR")
-
-    def right_par(self):
-        self.accept("RPAR")
-
     def factor(self):
         # factor = number | lpar expr rpar
-        print(self.current_token.type)
 
         if self.current_token.type == "NUMBER":
-            node = NumNode()
-            node.token = self.current_token
-            node.value = self.current_token.value
+            node = NumNode(self.current_token)
             self.number()
             return node
 
         elif self.current_token.type == "LPAR":
+            self.accept("LPAR")
             node = self.expr()
-            self.right_par()
+            self.accept("RPAR")
             return node
         else:
             self.error("Factor")
@@ -96,21 +94,19 @@ class Parser:
         term = factor ({mul, div}, factor)
         :return: returns a node of AST (OpNode)
         """
-        node = OpNode()
 
-        print("Trying to parse factor")
-        node.left = self.factor()
+        node = self.factor()
 
         while self.current_token.type in ("MUL", "DIV"):
-            print("Entered loop")
+            operation = None
             if self.current_token.type == "MUL":
+                operation = self.current_token
                 self.accept("MUL")
-                node.op = self.current_token
             elif self.current_token.type == "DIV":
+                operation = self.current_token
                 self.accept("DIV")
-                node.op = self.current_token
 
-            node.right = self.factor()
+            node = OpNode(node, operation, self.factor())
 
         return node
 
@@ -120,26 +116,17 @@ class Parser:
         expr = term ({add, sub} term) *
         :return: returns a node of AST (OpNode)
         """
-        node = OpNode()
-
-        node.left = self.term()
-
-        print("Sucessfully parsed first term")
+        node = self.term()
 
         while self.current_token.type in ("ADD", "SUB"):
+            operation = None
             if self.current_token.type == "ADD":
-                node.op = self.current_token
+                operation = self.current_token
                 self.accept("ADD")
             elif self.current_token.type == "SUB":
-                node.op = self.current_token
+                operation = self.current_token
                 self.accept("SUB")
 
-        node.right = self.term()
-
-        print("Parsed second term")
+            node = OpNode(node, operation, self.term())
 
         return node
-
-    # main method that parses the tokens
-    def getTree(self):
-        return
