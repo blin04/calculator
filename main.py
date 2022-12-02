@@ -2,7 +2,7 @@
 # TODO: evalute tree
 
 from lexer import Lexer
-from parser import Parser
+from parser import Parser, Evaluate
 
 if __name__ == '__main__':
     expression = input()
@@ -11,7 +11,6 @@ if __name__ == '__main__':
     tokens = lexer.tokenize()
 
     parser = Parser(tokens)
-    print(parser.tokens)
-    start_node = parser.expr()
+    tree = parser.expr()
 
-    print(start_node)
+    print(Evaluate(tree))

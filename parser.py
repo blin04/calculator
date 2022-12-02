@@ -4,9 +4,9 @@ class OpNode:
     nodes in AST
     """
     def __init__(self, left=None, op=None, right=None):
-        self.op = op
-        self.left = left
-        self.right = right
+        self.op = op        # operation token
+        self.left = left    # node
+        self.right = right  # node
 
     def __str__(self):
         left = str(self.left)
@@ -27,6 +27,7 @@ class NumNode:
     nodes in AST
     """
     def __init__(self, token=None):
+        # number token
         self.token = token
         self.value = token.value
 
@@ -130,3 +131,29 @@ class Parser:
             node = OpNode(node, operation, self.term())
 
         return node
+
+
+def Evaluate(node):
+    if type(node) is NumNode:
+        return node.value
+
+    left_val = None
+    right_val = None
+
+    if node.left is not None:
+        left_val = Evaluate(node.left)
+
+    if node.right is not None:
+        right_val = Evaluate(node.right)
+
+    if node.op.type == "ADD":
+        return left_val + right_val
+    elif node.op.type == "SUB":
+        return left_val - right_val
+    elif node.op.type == "MUL":
+        return left_val * right_val
+    elif node.op.type == "DIV":
+        return left_val / right_val
+    else:
+        print("Error: Can't evaluate expression")
+        exit()
