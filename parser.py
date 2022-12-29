@@ -70,15 +70,12 @@ class Parser:
 
     # methods for parsing
 
-    def number(self):
-        self.accept("NUMBER")
-
-    def factor(self):
-        # factor = number | lpar expr rpar
+    def atom(self):
+        # atom = number | lpar expr rpar
 
         if self.current_token.type == "NUMBER":
             node = NumNode(self.current_token)
-            self.number()
+            self.accept("NUMBER")
             return node
 
         elif self.current_token.type == "LPAR":
@@ -87,12 +84,29 @@ class Parser:
             self.accept("RPAR")
             return node
         else:
-            self.error("Factor")
+            self.error("Atom")
+
+    def factor(self):
+        """
+        parsing factors
+        factor = atom (pow atom)*
+        :return: returns a node of AST (OpNode)
+        """
+
+        node = self.atom()
+
+        while self.current_token.type == "POW":
+            operation = self.current_token
+            self.accept("POW")
+
+            node = OpNode(node, operation, self.factor())
+
+        return node
 
     def term(self):
         """
         parsing terms
-        term = factor ({mul, div}, factor)
+        term = factor ({mul, div}, factor)*
         :return: returns a node of AST (OpNode)
         """
 
@@ -154,6 +168,8 @@ def Evaluate(node):
         return left_val * right_val
     elif node.op.type == "DIV":
         return left_val / right_val
+    elif node.op.type == "POW":
+        return left_val ** right_val
     else:
         print("Error: Can't evaluate expression")
         exit()

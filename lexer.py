@@ -76,6 +76,9 @@ class Lexer:
             elif self.text[i] == "/":
                 token.type = "DIV"
                 token.value = '/'
+            elif self.text[i] == "^":
+                token.type = "POW"
+                token.value = "^"
             else:
                 print("LexerError: unrecognized symbol")
                 exit()
